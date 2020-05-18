@@ -3,15 +3,20 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const {logger} = require('./logger/index.js')
+const {mode, isDevelopment, port} = require('./modules/mode.js')
+const {logger} = require('./modules/logger.js')
 
-const isProduction = process.env.NODE_ENV === 'production'
-const isDevelopment = !isProduction
+
+// const isProduction = process.env.NODE_ENV === 'production'
+// const isDevelopment = !isProduction
+
 logger()
-console.log( "Production mode:", isProduction )
-console.log( "Development mode:", isDevelopment )
-console.log( '\n' )
-console.log( '\n' )
+mode()
+
+// console.log( "Production mode:", isProduction )
+// console.log( "Development mode:", isDevelopment )
+// console.log( '\n' )
+// console.log( '\n' )
 
 const filename = (file) => isDevelopment ?  `cluster[hash].${file}` : `cluster.${file}`
 
@@ -31,6 +36,10 @@ module.exports = {
       }
     },
     devtool: isDevelopment ? 'source-map' : false,
+    devServer: {
+        port,
+        hot: isDevelopment
+    },
     plugins: [
       new CleanWebpackPlugin(),
       new HTMLWebpackPlugin({
